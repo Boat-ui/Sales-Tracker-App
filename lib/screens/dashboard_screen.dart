@@ -29,7 +29,7 @@ class DashboardScreen extends StatelessWidget {
               Row(
                 children: [
                   const Text(
-                    '👗',
+                    '📊',
                     style: TextStyle(fontSize: 28),
                   ),
                   const SizedBox(width: 10),
@@ -37,7 +37,7 @@ class DashboardScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Lady Store',
+                        'BizSplit ',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

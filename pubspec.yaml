@@ -1,5 +1,5 @@
-name: ladystore
-description: Lady Store - Sales & Profit Tracker
+name: BizSplit
+description: Sales & Profit Tracker
 
 publish_to: 'none'
 version: 1.0.0+1
@@ -20,6 +20,33 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.9
 
 flutter:
   uses-material-design: true
+
+# ─── App Icon ───────────────────────────────────────────────────────────────
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#0D1F2D"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  web:
+    generate: false
+  min_sdk_android: 21
+
+# ─── Splash Screen ──────────────────────────────────────────────────────────
+flutter_native_splash:
+  color: "#0D1F2D"
+  image: assets/icon/app_icon.png
+  color_dark: "#0D1F2D"
+  image_dark: assets/icon/app_icon.png
+  android_12:
+    color: "#0D1F2D"
+    image: assets/icon/app_icon.png
+    icon_background_color: "#0D1F2D"
+  android: true
+  ios: true
+  fullscreen: true
