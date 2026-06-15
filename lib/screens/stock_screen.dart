@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/stock_item.dart';
 import '../services/app_state.dart';
+import '../theme/app_theme.dart';
 
 class StockScreen extends StatelessWidget {
   const StockScreen({super.key});
@@ -14,32 +15,34 @@ class StockScreen extends StatelessWidget {
     final stock = state.stock;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDF6FF),
+      backgroundColor: AppTheme.navy,
       appBar: AppBar(
-        title: const Text('My Stock',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF4A148C),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF4A148C),
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Item'),
-        onPressed: () => _showItemDialog(context, state),
+        title: const Text('My Stock'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton.icon(
+              onPressed: () => _showItemDialog(context, state),
+              icon: const Icon(Icons.add, color: AppTheme.teal, size: 18),
+              label: const Text('Add', style: TextStyle(color: AppTheme.teal, fontWeight: FontWeight.w600)),
+            ),
+          ),
+        ],
       ),
       body: stock.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.inventory_2_outlined,
-                      size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No stock yet.\nTap + to add items.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  Container(
+                    width: 72, height: 72,
+                    decoration: BoxDecoration(color: AppTheme.navyCard, borderRadius: BorderRadius.circular(20), border: Border.all(color: const Color(0xFF1D3A4F), width: 0.5)),
+                    child: const Icon(Icons.inventory_2_outlined, size: 32, color: AppTheme.textMuted),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('No stock yet', style: TextStyle(color: AppTheme.textPrimary, fontSize: 16, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 6),
+                  const Text('Tap Add to add your first item', style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
                 ],
               ),
             )
@@ -50,51 +53,48 @@ class StockScreen extends StatelessWidget {
                 final item = stock[i];
                 final fmt = NumberFormat('#,##0.00');
                 final low = item.quantity <= 2;
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                  elevation: 2,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
-                    leading: CircleAvatar(
-                      backgroundColor: low
-                          ? Colors.orange.shade100
-                          : const Color(0xFF4A148C).withOpacity(0.1),
-                      child: Icon(
-                        Icons.checkroom,
-                        color: low ? Colors.orange : const Color(0xFF4A148C),
-                      ),
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: AppTheme.navyCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: low ? AppTheme.warning.withOpacity(0.3) : const Color(0xFF1D3A4F),
+                      width: 0.5,
                     ),
-                    title: Text(item.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    leading: Container(
+                      width: 44, height: 44,
+                      decoration: BoxDecoration(
+                        color: low ? AppTheme.warning.withOpacity(0.12) : AppTheme.teal.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.checkroom_outlined, color: low ? AppTheme.warning : AppTheme.teal, size: 20),
+                    ),
+                    title: Text(item.name, style: const TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 14)),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                            'Cost: ${state.settings.currency}${fmt.format(item.costPrice)}'),
+                        const SizedBox(height: 4),
+                        Text('Cost: ${state.settings.currency}${fmt.format(item.costPrice)}', style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
                         if (item.category != null)
-                          Text('Category: ${item.category}',
-                              style: const TextStyle(fontSize: 12)),
+                          Text(item.category!, style: const TextStyle(color: AppTheme.textMuted, fontSize: 11)),
                       ],
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          '${item.quantity} pcs',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: low ? Colors.orange : Colors.black87,
-                            fontSize: 16,
-                          ),
-                        ),
+                        Text('${item.quantity} pcs', style: TextStyle(color: low ? AppTheme.warning : AppTheme.textPrimary, fontWeight: FontWeight.w700, fontSize: 15)),
                         if (low)
-                          const Text('Low!',
-                              style: TextStyle(
-                                  color: Colors.orange, fontSize: 11)),
+                          Container(
+                            margin: const EdgeInsets.only(top: 3),
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(color: AppTheme.warning.withOpacity(0.15), borderRadius: BorderRadius.circular(6)),
+                            child: const Text('Low', style: TextStyle(color: AppTheme.warning, fontSize: 10, fontWeight: FontWeight.w600)),
+                          ),
                       ],
                     ),
                     onTap: () => _showItemDialog(context, state, item: item),
@@ -106,83 +106,50 @@ class StockScreen extends StatelessWidget {
     );
   }
 
-  void _showItemDialog(BuildContext context, AppState state,
-      {StockItem? item}) {
+  void _showItemDialog(BuildContext context, AppState state, {StockItem? item}) {
     final isEdit = item != null;
     final nameCtrl = TextEditingController(text: item?.name ?? '');
-    final costCtrl =
-        TextEditingController(text: item?.costPrice.toString() ?? '');
-    final qtyCtrl =
-        TextEditingController(text: item?.quantity.toString() ?? '');
-    final catCtrl = TextEditingController(text: item?.category ?? '');
+    final costCtrl = TextEditingController(text: item?.costPrice.toString() ?? '');
+    final qtyCtrl  = TextEditingController(text: item?.quantity.toString() ?? '');
+    final catCtrl  = TextEditingController(text: item?.category ?? '');
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 24,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-        ),
+        padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              isEdit ? 'Edit Item' : 'Add Stock Item',
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4A148C)),
-            ),
-            const SizedBox(height: 16),
-            _field(nameCtrl, 'Item Name (e.g. Ankara Blouse)', Icons.checkroom),
+            Row(children: [
+              Container(width: 4, height: 20, decoration: BoxDecoration(color: AppTheme.teal, borderRadius: BorderRadius.circular(2))),
+              const SizedBox(width: 10),
+              Text(isEdit ? 'Edit Item' : 'Add Stock Item', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+            ]),
+            const SizedBox(height: 20),
+            _field(nameCtrl, 'Item name', Icons.checkroom_outlined),
             const SizedBox(height: 12),
-            _field(costCtrl, 'Cost Price (what you paid)', Icons.attach_money,
-                isNum: true),
+            _field(costCtrl, 'Cost price', Icons.attach_money, isNum: true),
             const SizedBox(height: 12),
-            _field(qtyCtrl, 'Quantity in stock', Icons.inventory,
-                isNum: true, isInt: true),
+            _field(qtyCtrl, 'Quantity in stock', Icons.inventory_2_outlined, isNum: true, isInt: true),
             const SizedBox(height: 12),
-            _field(catCtrl, 'Category (optional, e.g. Tops)', Icons.category),
+            _field(catCtrl, 'Category (optional)', Icons.label_outline),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A148C),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
                 onPressed: () {
                   final name = nameCtrl.text.trim();
                   final cost = double.tryParse(costCtrl.text) ?? 0;
-                  final qty = int.tryParse(qtyCtrl.text) ?? 0;
+                  final qty  = int.tryParse(qtyCtrl.text) ?? 0;
                   if (name.isEmpty || cost <= 0 || qty < 0) return;
-
                   if (isEdit) {
-                    item!.name = name;
-                    item.costPrice = cost;
-                    item.quantity = qty;
-                    item.category =
-                        catCtrl.text.trim().isEmpty ? null : catCtrl.text.trim();
+                    item!.name = name; item.costPrice = cost; item.quantity = qty;
+                    item.category = catCtrl.text.trim().isEmpty ? null : catCtrl.text.trim();
                     state.updateStockItem(item);
                   } else {
-                    state.addStockItem(StockItem(
-                      id: const Uuid().v4(),
-                      name: name,
-                      costPrice: cost,
-                      quantity: qty,
-                      category: catCtrl.text.trim().isEmpty
-                          ? null
-                          : catCtrl.text.trim(),
-                    ));
+                    state.addStockItem(StockItem(id: const Uuid().v4(), name: name, costPrice: cost, quantity: qty, category: catCtrl.text.trim().isEmpty ? null : catCtrl.text.trim()));
                   }
                   Navigator.pop(ctx);
                 },
@@ -195,27 +162,12 @@ class StockScreen extends StatelessWidget {
     );
   }
 
-  Widget _field(
-    TextEditingController ctrl,
-    String hint,
-    IconData icon, {
-    bool isNum = false,
-    bool isInt = false,
-  }) {
+  Widget _field(TextEditingController ctrl, String hint, IconData icon, {bool isNum = false, bool isInt = false}) {
     return TextField(
       controller: ctrl,
-      keyboardType: isNum
-          ? (isInt ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true))
-          : TextInputType.text,
-      decoration: InputDecoration(
-        hintText: hint,
-        prefixIcon: Icon(icon, color: const Color(0xFF4A148C)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF4A148C)),
-        ),
-      ),
+      keyboardType: isNum ? (isInt ? TextInputType.number : const TextInputType.numberWithOptions(decimal: true)) : TextInputType.text,
+      style: const TextStyle(color: AppTheme.textPrimary),
+      decoration: InputDecoration(hintText: hint, prefixIcon: Icon(icon)),
     );
   }
 
@@ -223,18 +175,11 @@ class StockScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Item?'),
+        title: const Text('Delete item?'),
         content: Text('Remove "${item.name}" from stock?'),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              state.deleteStockItem(item.id);
-              Navigator.pop(ctx);
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel', style: TextStyle(color: AppTheme.textSecondary))),
+          TextButton(onPressed: () { state.deleteStockItem(item.id); Navigator.pop(ctx); }, child: const Text('Delete', style: TextStyle(color: AppTheme.danger))),
         ],
       ),
     );
