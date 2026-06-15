@@ -180,7 +180,7 @@ flutter run
 
 ## Screenshots
 
-Add screenshots of the application here.
+Screenshots of the application to be added here.
 
 * Dashboard Screen
 * Stock Screen
