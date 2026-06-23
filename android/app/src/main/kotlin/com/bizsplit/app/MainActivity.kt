@@ -1,4 +1,4 @@
-package com.example.ladystore
+package com.bizsplit.app
 
 import io.flutter.embedding.android.FlutterActivity
 
