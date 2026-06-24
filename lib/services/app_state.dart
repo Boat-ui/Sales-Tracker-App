@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import '../models/stock_item.dart';
 import '../models/sale.dart';
 import '../models/settings.dart';
+import 'firestore_service.dart';
 import 'storage_service.dart';
 
 class AppState extends ChangeNotifier {
-  final StorageService _storage = StorageService();
+  final FirestoreService _firestore = FirestoreService();
+  final StorageService _local = StorageService(); // kept as offline fallback
 
   List<StockItem> _stock = [];
   List<Sale> _sales = [];
@@ -18,9 +20,17 @@ class AppState extends ChangeNotifier {
   bool get loaded => _loaded;
 
   Future<void> init() async {
-    _stock = await _storage.loadStock();
-    _sales = await _storage.loadSales();
-    _settings = await _storage.loadSettings();
+    try {
+      // Load from Firestore (cloud)
+      _stock    = await _firestore.loadStock();
+      _sales    = await _firestore.loadSales();
+      _settings = await _firestore.loadSettings();
+    } catch (_) {
+      // Fallback to local if offline
+      _stock    = await _local.loadStock();
+      _sales    = await _local.loadSales();
+      _settings = await _local.loadSettings();
+    }
     _loaded = true;
     notifyListeners();
   }
@@ -28,56 +38,64 @@ class AppState extends ChangeNotifier {
   // ── Stock ──────────────────────────────────────────────
   Future<void> addStockItem(StockItem item) async {
     _stock.add(item);
-    await _storage.saveStock(_stock);
     notifyListeners();
+    await _firestore.saveStockItem(item);
+    await _local.saveStock(_stock); // local backup
   }
 
   Future<void> updateStockItem(StockItem updated) async {
     final idx = _stock.indexWhere((s) => s.id == updated.id);
     if (idx != -1) {
       _stock[idx] = updated;
-      await _storage.saveStock(_stock);
       notifyListeners();
+      await _firestore.saveStockItem(updated);
+      await _local.saveStock(_stock);
     }
   }
 
   Future<void> deleteStockItem(String id) async {
     _stock.removeWhere((s) => s.id == id);
-    await _storage.saveStock(_stock);
     notifyListeners();
+    await _firestore.deleteStockItem(id);
+    await _local.saveStock(_stock);
   }
 
   // ── Sales ──────────────────────────────────────────────
   Future<void> addSale(Sale sale) async {
-    // deduct from stock
+    // Deduct stock
     final idx = _stock.indexWhere((s) => s.id == sale.stockItemId);
     if (idx != -1) {
       _stock[idx].quantity -= sale.quantitySold;
-      await _storage.saveStock(_stock);
+      await _firestore.saveStockItem(_stock[idx]);
     }
     _sales.add(sale);
-    await _storage.saveSales(_sales);
     notifyListeners();
+    await _firestore.saveSale(sale);
+    await _local.saveSales(_sales);
+    await _local.saveStock(_stock);
   }
 
   Future<void> deleteSale(String id) async {
     final sale = _sales.firstWhere((s) => s.id == id);
-    // restore stock
+    // Restore stock
     final idx = _stock.indexWhere((s) => s.id == sale.stockItemId);
     if (idx != -1) {
       _stock[idx].quantity += sale.quantitySold;
-      await _storage.saveStock(_stock);
+      await _firestore.saveStockItem(_stock[idx]);
     }
     _sales.removeWhere((s) => s.id == id);
-    await _storage.saveSales(_sales);
     notifyListeners();
+    await _firestore.deleteSale(id);
+    await _local.saveSales(_sales);
+    await _local.saveStock(_stock);
   }
 
   // ── Settings ───────────────────────────────────────────
   Future<void> updateSettings(AppSettings s) async {
     _settings = s;
-    await _storage.saveSettings(s);
     notifyListeners();
+    await _firestore.saveSettings(s);
+    await _local.saveSettings(s);
   }
 
   // ── Computed ───────────────────────────────────────────
@@ -92,16 +110,16 @@ class AppState extends ChangeNotifier {
     double revenue = 0, cost = 0, profit = 0;
     for (final s in list) {
       revenue += s.totalRevenue;
-      cost += s.totalCost;
-      profit += s.totalProfit;
+      cost    += s.totalCost;
+      profit  += s.totalProfit;
     }
     return {
-      'revenue': revenue,
-      'cost': cost,
-      'profit': profit,
-      'business': profit * 0.5,
-      'personal': profit * 0.5,
-      'savings': profit * 0.5 * (_settings.personalSavingsPercent / 100),
+      'revenue':     revenue,
+      'cost':        cost,
+      'profit':      profit,
+      'business':    profit * 0.5,
+      'personal':    profit * 0.5,
+      'savings':     profit * 0.5 * (_settings.personalSavingsPercent / 100),
       'personalUse': profit * 0.5 * (_settings.personalUsePercent / 100),
     };
   }

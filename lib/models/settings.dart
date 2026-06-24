@@ -11,18 +11,31 @@ class AppSettings {
     this.currency = '₦',
   });
 
+  // ── Firestore ──────────────────────────────────────────
+  Map<String, dynamic> toMap() => {
+    'personalSavingsPercent': personalSavingsPercent,
+    'personalUsePercent': personalUsePercent,
+    'currency': currency,
+  };
+
+  factory AppSettings.fromMap(Map<String, dynamic> m) => AppSettings(
+    personalSavingsPercent: (m['personalSavingsPercent'] as num).toDouble(),
+    personalUsePercent: (m['personalUsePercent'] as num).toDouble(),
+    currency: m['currency'] ?? '₦',
+  );
+
+  // ── Local JSON (offline fallback) ──────────────────────
   Map<String, dynamic> toJson() => {
-        'personalSavingsPercent': personalSavingsPercent,
-        'personalUsePercent': personalUsePercent,
-        'currency': currency,
-      };
+    'personalSavingsPercent': personalSavingsPercent,
+    'personalUsePercent': personalUsePercent,
+    'currency': currency,
+  };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
-        personalSavingsPercent:
-            (json['personalSavingsPercent'] as num).toDouble(),
-        personalUsePercent: (json['personalUsePercent'] as num).toDouble(),
-        currency: json['currency'] ?? '₦',
-      );
+    personalSavingsPercent: (json['personalSavingsPercent'] as num).toDouble(),
+    personalUsePercent: (json['personalUsePercent'] as num).toDouble(),
+    currency: json['currency'] ?? '₦',
+  );
 
   factory AppSettings.fromJsonString(String jsonStr) =>
       AppSettings.fromJson(jsonDecode(jsonStr));
