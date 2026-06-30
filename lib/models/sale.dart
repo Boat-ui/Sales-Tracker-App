@@ -11,6 +11,8 @@ class Sale {
   final DateTime date;
   final double personalSavingsPercent;
   final double personalUsePercent;
+  final double businessPercent;
+  final double personalPercent;
 
   Sale({
     required this.id,
@@ -21,14 +23,16 @@ class Sale {
     required this.quantitySold,
     required this.personalSavingsPercent,
     required this.personalUsePercent,
+    this.businessPercent = 50,
+    this.personalPercent = 50,
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
   double get totalRevenue => sellingPrice * quantitySold;
   double get totalCost => costPrice * quantitySold;
   double get totalProfit => totalRevenue - totalCost;
-  double get businessShare => totalProfit * 0.5;
-  double get personalShare => totalProfit * 0.5;
+  double get businessShare => totalProfit * (businessPercent / 100);
+  double get personalShare => totalProfit * (personalPercent / 100);
   double get personalSavings => personalShare * (personalSavingsPercent / 100);
   double get personalUse => personalShare * (personalUsePercent / 100);
 
@@ -43,6 +47,8 @@ class Sale {
     'date': Timestamp.fromDate(date),
     'personalSavingsPercent': personalSavingsPercent,
     'personalUsePercent': personalUsePercent,
+    'businessPercent': businessPercent,
+    'personalPercent': personalPercent,
   };
 
   factory Sale.fromMap(Map<String, dynamic> m) => Sale(
@@ -57,6 +63,8 @@ class Sale {
         : DateTime.parse(m['date']),
     personalSavingsPercent: (m['personalSavingsPercent'] as num).toDouble(),
     personalUsePercent: (m['personalUsePercent'] as num).toDouble(),
+    businessPercent: (m['businessPercent'] as num? ?? 50).toDouble(),
+    personalPercent: (m['personalPercent'] as num? ?? 50).toDouble(),
   );
 
   // ── Local JSON (offline fallback) ──────────────────────
@@ -70,6 +78,8 @@ class Sale {
     'date': date.toIso8601String(),
     'personalSavingsPercent': personalSavingsPercent,
     'personalUsePercent': personalUsePercent,
+    'businessPercent': businessPercent,
+    'personalPercent': personalPercent,
   };
 
   factory Sale.fromJson(Map<String, dynamic> json) => Sale(
@@ -82,6 +92,8 @@ class Sale {
     date: DateTime.parse(json['date']),
     personalSavingsPercent: (json['personalSavingsPercent'] as num).toDouble(),
     personalUsePercent: (json['personalUsePercent'] as num).toDouble(),
+    businessPercent: (json['businessPercent'] as num? ?? 50).toDouble(),
+    personalPercent: (json['personalPercent'] as num? ?? 50).toDouble(),
   );
 
   static List<Sale> listFromJson(String jsonStr) {

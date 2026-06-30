@@ -1,10 +1,12 @@
 # BizSplit
 
-**Smart Inventory, Sales & Profit Allocation for Small Businesses**
+## Smart Inventory, Sales & Profit Allocation for Small Businesses
 
-BizSplit is a mobile application designed to help small business owners track inventory, record sales, monitor profits, and automatically allocate earnings into business growth, savings, and personal use.
+BizSplit is a smart business management app that helps small business owners track inventory, record sales, analyze performance, monitor profits, and automatically allocate earnings into business growth, savings, and personal use.
 
-Whether you're running a phone accessories shop, retail store, side hustle, or small trading business, BizSplit gives you a clear picture of your finances and stock levels without the complexity of traditional accounting software.
+With built-in analytics, secure cloud synchronization, and offline support, BizSplit gives business owners a clear picture of their finances and inventory without the complexity of traditional accounting software.
+
+Whether you're running a phone accessories shop, retail store, side hustle, or small trading business, BizSplit helps you make informed decisions, stay organized, and grow sustainably.
 
 ---
 

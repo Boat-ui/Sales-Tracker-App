@@ -263,9 +263,9 @@ class _SalesScreenState extends State<SalesScreen> {
                     ),
                     child: Column(children: [
                       _previewRow('Profit', '${state.settings.currency}${fmt.format(profit)}', isPos ? AppTheme.profit : AppTheme.danger),
-                      _previewRow('Business (50%)', '${state.settings.currency}${fmt.format(profit * 0.5)}', AppTheme.biz),
-                      _previewRow('Savings (${state.settings.personalSavingsPercent.toInt()}%)', '${state.settings.currency}${fmt.format(profit * 0.5 * state.settings.personalSavingsPercent / 100)}', AppTheme.savings),
-                      _previewRow('Personal Use (${state.settings.personalUsePercent.toInt()}%)', '${state.settings.currency}${fmt.format(profit * 0.5 * state.settings.personalUsePercent / 100)}', AppTheme.danger),
+                      _previewRow('Business (${state.settings.businessPercent.toInt()}%)', '${state.settings.currency}${fmt.format(profit * state.settings.businessPercent / 100)}', AppTheme.biz),
+                      _previewRow('Savings (${state.settings.personalSavingsPercent.toInt()}%)', '${state.settings.currency}${fmt.format(profit * state.settings.personalPercent / 100 * state.settings.personalSavingsPercent / 100)}', AppTheme.savings),
+                      _previewRow('Personal Use (${state.settings.personalUsePercent.toInt()}%)', '${state.settings.currency}${fmt.format(profit * state.settings.personalPercent / 100 * state.settings.personalUsePercent / 100)}', AppTheme.danger),
                     ]),
                   );
                 }),
@@ -293,6 +293,8 @@ class _SalesScreenState extends State<SalesScreen> {
                       quantitySold: qty,
                       personalSavingsPercent: state.settings.personalSavingsPercent,
                       personalUsePercent: state.settings.personalUsePercent,
+                      businessPercent: state.settings.businessPercent,
+                      personalPercent: state.settings.personalPercent,
                     ));
                     Navigator.pop(ctx);
                     ScaffoldMessenger.of(context).showSnackBar(

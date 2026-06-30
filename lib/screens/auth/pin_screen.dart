@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../theme/app_theme.dart';
 
 class PinScreen extends StatefulWidget {
-  final Widget nextScreen;
+  final VoidCallback onUnlocked;
   final bool isSetup;
 
-  const PinScreen({super.key, required this.nextScreen, this.isSetup = false});
+  const PinScreen({super.key, required this.onUnlocked, this.isSetup = false});
 
-  static const _pinKey = 'bizsplit_pin';
+  // PIN key is per user account using their UID
+  static String _pinKey() {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
+    return 'bizsplit_pin_$uid';
+  }
 
   static Future<bool> hasPin() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey(_pinKey);
+    return prefs.containsKey(_pinKey());
   }
 
   static Future<void> clearPin() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_pinKey);
+    await prefs.remove(_pinKey());
   }
 
   @override
@@ -50,17 +55,17 @@ class _PinScreenState extends State<PinScreen> {
       } else {
         if (_pin == _confirmPin) {
           final prefs = await SharedPreferences.getInstance();
-          await prefs.setString(PinScreen._pinKey, _pin);
-          if (mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => widget.nextScreen));
+          await prefs.setString(PinScreen._pinKey(), _pin);
+          if (mounted) widget.onUnlocked();
         } else {
           setState(() { _pin = ''; _confirmPin = ''; _confirming = false; _error = 'PINs did not match. Try again.'; });
         }
       }
     } else {
       final prefs = await SharedPreferences.getInstance();
-      final saved = prefs.getString(PinScreen._pinKey);
+      final saved = prefs.getString(PinScreen._pinKey());
       if (_pin == saved) {
-        if (mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => widget.nextScreen));
+        if (mounted) widget.onUnlocked();
       } else {
         setState(() { _pin = ''; _error = 'Incorrect PIN. Try again.'; });
       }
