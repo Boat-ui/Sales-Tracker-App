@@ -1,178 +1,417 @@
-# BizSplit
+# 💼 BizSplit
 
-## Smart Inventory, Sales & Profit Allocation for Small Businesses
+<p align="center">
+  <img src="assets/logo.png" alt="BizSplit Logo" width="180"/>
+</p>
 
-BizSplit is a smart business management app that helps small business owners track inventory, record sales, analyze performance, monitor profits, and automatically allocate earnings into business growth, savings, and personal use.
+<h3 align="center">
+Smart Inventory, Sales, Expense & Profit Management for Small Businesses
+</h3>
 
-With built-in analytics, secure cloud synchronization, and offline support, BizSplit gives business owners a clear picture of their finances and inventory without the complexity of traditional accounting software.
+<p align="center">
+A modern Flutter application that helps small business owners manage inventory, track sales and expenses, monitor profits, receive low-stock alerts, and automatically allocate earnings between Business, Savings, and Personal Use.
+</p>
 
-Whether you're running a phone accessories shop, retail store, side hustle, or small trading business, BizSplit helps you make informed decisions, stay organized, and grow sustainably.
+<p align="center">
 
----
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-## Features
-
-### Dashboard
-
-Get a complete overview of your business performance in one place.
-
-* View today's revenue and profit
-* Track business share allocation
-* Track savings allocation
-* Track personal use allocation
-* View all-time totals
-* Receive low stock warnings
-* Monitor overall business health at a glance
+</p>
 
 ---
 
-### Stock Management
+# 📖 Overview
 
-Manage your inventory efficiently.
+Managing a small business shouldn't require complicated accounting software.
 
-* Add products with cost price and quantity
-* Edit existing products
-* Delete products with a long press
-* Automatically update stock levels after sales
-* Receive alerts when stock is running low
+BizSplit is designed for entrepreneurs who want a simple but powerful solution for tracking inventory, recording sales, monitoring expenses, analyzing business performance, and managing profits.
+
+Whether you own a phone accessories shop, clothing business, retail store, market stall, or side hustle, BizSplit provides everything needed to stay organized and make informed financial decisions.
 
 ---
 
-### Sales Tracking
+# ✨ Features
 
-Record sales quickly and accurately.
+## 🔐 Authentication
 
-* Select products directly from inventory
-* Enter selling price and quantity sold
-* View a live profit breakdown before saving
-* Automatically calculate revenue and profit
-* Browse historical sales records by date
-* Track daily business performance
+Secure account management powered by Firebase Authentication.
 
----
-
-### Settings
-
-Customize BizSplit to fit your business.
-
-* Choose your preferred currency
-
-  * GH₵
-  * ₦
-  * $
-  * £
-  * and more
-* Configure profit allocation percentages
-* Adjust savings and personal-use distribution with a simple slider
+- Create an account
+- Secure Login
+- Forgot Password
+- Cloud-based user authentication
 
 ---
 
-## How BizSplit Works
+## 📊 Dashboard
 
-When a sale is recorded:
+### Overview
+
+Monitor your business from one place.
+
+- Today's Revenue
+- Today's Profit
+- Business Allocation
+- Savings Allocation
+- Personal Allocation
+- Lifetime Revenue
+- Lifetime Profit
+- Inventory Summary
+- Low Stock Indicators
+
+### Analytics
+
+Gain insights into business performance.
+
+- Revenue Trends
+- Profit Trends
+- Monthly Comparisons
+- Profit Allocation Charts
+- Top Selling Products
+
+---
+
+## 📦 Inventory Management
+
+Manage products with ease.
+
+- Add Products
+- Edit Products
+- Delete Products
+- Cost Price
+- Selling Price
+- Product Quantity
+- Automatic Stock Updates
+
+---
+
+## 💰 Sales Tracking
+
+Record transactions quickly.
+
+- Product Selection
+- Revenue Calculation
+- Profit Calculation
+- Sales History
+- Automatic Inventory Deduction
+
+---
+
+## 💸 Expense Tracker
+
+Track every business expense.
+
+- Record Expenses
+- Expense Categories
+- Daily Spending
+- Expense History
+- Profit Impact Analysis
+
+---
+
+## 🔔 Low Stock Notifications
+
+Stay informed before inventory runs out.
+
+- Automatic Alerts
+- Dashboard Notifications
+- Custom Low Stock Threshold
+- Restock Reminders
+
+---
+
+## ⚙️ Settings
+
+Customize BizSplit to suit your business.
+
+### Currency
+
+Supports multiple currencies.
+
+- GH₵
+- $
+- ₦
+- £
+- €
+- and more...
+
+### Profit Split
+
+Automatically divide profits into:
+
+- Business
+- Savings
+- Personal Use
+
+using customizable percentages.
+
+### Low Stock Threshold
+
+Set the minimum stock quantity before notifications appear.
+
+### Reports
+
+Generate reports for:
+
+- Sales
+- Profits
+- Expenses
+- Inventory
+
+### Security
+
+- Change PIN
+- Sign Out
+
+---
+
+# ⚡ How BizSplit Works
+
+Whenever a sale is recorded:
 
 1. Revenue is calculated automatically.
-2. Profit is determined using the product's cost price.
-3. Profit is allocated according to your configured percentages:
+2. Profit is calculated from the product's cost price.
+3. Profit is divided according to the configured Business, Savings, and Personal percentages.
+4. Inventory updates instantly.
+5. Dashboard analytics refresh automatically.
+6. Low stock alerts appear when product quantities reach the configured threshold.
 
-   * Business Share
-   * Savings
-   * Personal Use
-4. Stock quantities are updated instantly.
-
-This helps business owners maintain financial discipline while keeping inventory records accurate.
+This helps business owners separate business finances from personal spending while maintaining accurate inventory records.
 
 ---
 
-## App Screens
+# 📱 Application Walkthrough
 
-### Dashboard
+## 🚀 Splash Screen
 
-Provides a summary of daily and lifetime business performance, including revenue, profit, allocations, and low-stock alerts.
+The application's launch screen displayed while BizSplit initializes.
 
-### Stock
-
-Manage inventory, cost prices, and product quantities.
-
-### Sales
-
-Record transactions and preview profit allocations before saving.
-
-### Settings
-
-Customize currency preferences and profit allocation rules.
+![](assets/screenshots/splash_screen.png)
 
 ---
 
-## Why BizSplit?
+## 💼 Welcome Screen
 
-Many small business owners struggle to separate business money from personal spending. BizSplit solves this problem by automatically organizing profits into meaningful categories, helping users:
+Displays the BizSplit branding before entering the application.
 
-* Understand where their money goes
-* Save consistently
-* Reinvest in their business
-* Monitor profitability
-* Maintain accurate inventory records
+![](assets/screenshots/welcome_screen.png)
 
 ---
 
-## Target Users
+## 📝 Sign Up
 
-BizSplit is ideal for:
+Create a new account to securely manage business data.
 
-* Phone accessory sellers
-* Retail store owners
-* Market traders
-* Side hustlers
-* Small business owners
-* Student entrepreneurs
-* Independent merchants
+Quick links include:
 
----
+- Login
+- Forgot Password
 
-## Future Enhancements
-
-Planned features include:
-
-* PDF and Excel report exports
-* Cloud backup and synchronization
-* Expense tracking
-* Sales analytics and charts
-* Barcode scanning
-* Customer management
-* Multi-device synchronization
+![](assets/screenshots/signup.png)
 
 ---
 
-## Tech Stack
+## 🔐 Login
 
-* Flutter
-* Dart
-* Local Storage (SQLite/SharedPreferences)
+Securely access your business dashboard.
+
+![](assets/screenshots/login.png)
 
 ---
 
-## Installation
+## 📊 Dashboard — Overview
 
-1. Clone the repository
+Provides a complete summary of business performance.
+
+- Revenue
+- Profit
+- Allocations
+- Inventory
+- Business Health
+
+![](assets/screenshots/dashboard_overview.png)
+
+---
+
+## 📈 Dashboard — Analytics
+
+Visualize business performance with charts and reports.
+
+- Revenue Trends
+- Profit Analysis
+- Monthly Comparison
+- Top Products
+
+![](assets/screenshots/dashboard_analytics.png)
+
+---
+
+## 📦 Stock Management
+
+Manage products and inventory.
+
+![](assets/screenshots/stock.png)
+
+---
+
+## 💰 Sales Tracking
+
+Record sales with automatic revenue and profit calculations.
+
+![](assets/screenshots/sales.png)
+
+---
+
+## 💸 Expense Tracker
+
+Track daily business expenses and monitor spending.
+
+![](assets/screenshots/expenses.png)
+
+---
+
+## 🔔 Low Stock Notification
+
+Automatic alerts notify users whenever inventory falls below the configured threshold.
+
+![](assets/screenshots/low_stock_alert.png)
+
+---
+
+# ⚙️ Settings
+
+## Main Settings
+
+Access every business preference from one central location.
+
+Available options include:
+
+- Currency
+- Profit Split
+- Low Stock Number
+- Reports
+- Change PIN
+- Sign Out
+
+![](assets/screenshots/settings.png)
+
+---
+
+## 💱 Currency Settings
+
+Choose your preferred business currency.
+
+![](assets/screenshots/settings_currency.png)
+
+---
+
+## 📊 Profit Split
+
+Configure automatic allocation percentages.
+
+- Business
+- Savings
+- Personal Use
+
+![](assets/screenshots/settings_split.png)
+
+---
+
+## 📦 Low Stock Number
+
+Set the minimum quantity that triggers stock notifications.
+
+![](assets/screenshots/settings_low_stock.png)
+
+---
+
+## 📄 Reports
+
+Generate business reports for better decision making.
+
+![](assets/screenshots/settings_reports.png)
+
+---
+
+## 🔒 Security
+
+Manage account security.
+
+- Change PIN
+- Sign Out
+
+![](assets/screenshots/settings_security.png)
+
+---
+
+# 🎯 Target Users
+
+BizSplit is designed for:
+
+- 📱 Phone Accessory Sellers
+- 👕 Clothing Businesses
+- 🛍 Retail Stores
+- 🏪 Market Traders
+- 🎓 Student Entrepreneurs
+- 💼 Small Business Owners
+- 🛒 Independent Merchants
+
+---
+
+# 🚀 Future Enhancements
+
+Planned improvements include:
+
+- Barcode Scanner
+- Customer Management
+- Supplier Management
+- Invoice Generation
+- PDF Reports
+- Excel Export
+- AI Business Insights
+- Multi-device Synchronization
+- Dark Mode
+- Multi-language Support
+
+---
+
+# 🛠 Tech Stack
+
+- Flutter
+- Dart
+- Firebase Authentication
+- Cloud Firestore
+- SQLite
+- SharedPreferences
+- Material Design 3
+
+---
+
+# 📥 Installation
+
+Clone the repository.
 
 ```bash
 git clone https://github.com/Boat-ui/Sales-Tracker-App
 ```
 
-2. Navigate to the project directory
+Navigate to the project.
 
 ```bash
 cd BizSplit
 ```
 
-3. Install dependencies
+Install dependencies.
 
 ```bash
 flutter pub get
 ```
 
-4. Run the application
+Run the application.
 
 ```bash
 flutter run
@@ -180,25 +419,28 @@ flutter run
 
 ---
 
-## Screenshots
-
-Screenshots of the application to be added here.
-
-* Dashboard Screen
-* Stock Screen
-* Sales Screen
-* Settings Screen
-
----
-
-## Author
+# 👨‍💻 Author
 
 **Enock Boateng**
 
-GitHub: https://github.com/Boat-ui
+Flutter Developer • Front-End Developer • Cybersecurity Enthusiast
+
+GitHub
+
+https://github.com/Boat-ui
+
+Portfolio
+
+<https://boat-ui.github.io/personal-portfolio/>
 
 ---
 
-## License
+# 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a ⭐ on GitHub. Your support helps the project reach more developers and motivates future improvements.
