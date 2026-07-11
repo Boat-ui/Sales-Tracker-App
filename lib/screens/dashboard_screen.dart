@@ -192,6 +192,32 @@ class _OverviewTab extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 8),
+              Builder(builder: (_) {
+                final todayExp = state.expensesForDate(DateTime.now());
+                final expTotal = todayExp.fold(0.0, (a, e) => a + e.amount);
+                final netProfit = todaySummary['profit']! - expTotal;
+                final isPos = netProfit >= 0;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                  decoration: BoxDecoration(
+                    color: isPos ? AppTheme.profit.withOpacity(0.08) : AppTheme.danger.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: isPos ? AppTheme.profit.withOpacity(0.3) : AppTheme.danger.withOpacity(0.3), width: 0.5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        Icon(isPos ? Icons.trending_up : Icons.trending_down, color: isPos ? AppTheme.profit : AppTheme.danger, size: 16),
+                        const SizedBox(width: 8),
+                        const Text('Net Profit (after expenses)', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+                      ]),
+                      Text(f(netProfit), style: TextStyle(color: isPos ? AppTheme.profit : AppTheme.danger, fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                );
+              }),
             ]),
 
           const SizedBox(height: 28),

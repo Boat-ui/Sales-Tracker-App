@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../models/settings.dart';
 import '../services/app_state.dart';
 import '../services/auth_service.dart';
 import '../screens/auth/pin_screen.dart';
@@ -12,6 +13,74 @@ import '../theme/app_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  Future<void> _showThresholdDialog(BuildContext context) async {
+    final state = context.read<AppState>();
+    int current = state.settings.lowStockThreshold;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) => AlertDialog(
+          title: const Text('Low Stock Alert'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Notify me when any item has this many units or fewer:',
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: current > 1 ? () => setLocal(() => current--) : null,
+                    icon: const Icon(Icons.remove_circle_outline),
+                    color: AppTheme.teal,
+                  ),
+                  Container(
+                    width: 64, height: 64,
+                    decoration: BoxDecoration(color: AppTheme.teal.withOpacity(0.1), borderRadius: BorderRadius.circular(14)),
+                    child: Center(child: Text('$current', style: const TextStyle(color: AppTheme.teal, fontSize: 28, fontWeight: FontWeight.w700))),
+                  ),
+                  IconButton(
+                    onPressed: current < 20 ? () => setLocal(() => current++) : null,
+                    icon: const Icon(Icons.add_circle_outline),
+                    color: AppTheme.teal,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Center(child: Text('unit${current == 1 ? '' : 's'}', style: const TextStyle(color: AppTheme.textMuted, fontSize: 13))),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel', style: TextStyle(color: AppTheme.textSecondary))),
+            TextButton(
+              onPressed: () {
+                final s = state.settings;
+                state.updateSettings(AppSettings(
+                  businessPercent: s.businessPercent,
+                  personalPercent: s.personalPercent,
+                  personalSavingsPercent: s.personalSavingsPercent,
+                  personalUsePercent: s.personalUsePercent,
+                  currency: s.currency,
+                  lowStockThreshold: current,
+                ));
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Alert set: notify when stock ≤ $current unit${current == 1 ? '' : 's'}')),
+                );
+              },
+              child: const Text('Save', style: TextStyle(color: AppTheme.teal, fontWeight: FontWeight.w600)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +150,15 @@ class SettingsScreen extends StatelessWidget {
             subtitle: 'Configure how profit is divided',
             color: AppTheme.biz,
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SplitScreen())),
+          ),
+          const SizedBox(height: 10),
+          _menuTile(
+            context,
+            icon: Icons.notifications_outlined,
+            label: 'Low Stock Alert',
+            subtitle: 'Set when to be notified about low stock',
+            color: AppTheme.warning,
+            onTap: () => _showThresholdDialog(context),
           ),
           const SizedBox(height: 10),
           _menuTile(

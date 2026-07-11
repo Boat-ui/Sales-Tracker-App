@@ -2,11 +2,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/stock_item.dart';
 import '../models/sale.dart';
 import '../models/settings.dart';
+import '../models/expense.dart';
 
 class StorageService {
-  static const _stockKey = 'stock_items';
-  static const _salesKey = 'sales';
+  static const _stockKey    = 'stock_items';
+  static const _salesKey    = 'sales';
   static const _settingsKey = 'app_settings';
+  static const _expensesKey = 'expenses';
 
   // ── Stock ──────────────────────────────────────────────
   Future<List<StockItem>> loadStock() async {
@@ -32,6 +34,19 @@ class StorageService {
   Future<void> saveSales(List<Sale> sales) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_salesKey, Sale.listToJson(sales));
+  }
+
+  // ── Expenses ───────────────────────────────────────────
+  Future<List<Expense>> loadExpenses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_expensesKey);
+    if (json == null || json.isEmpty) return [];
+    return Expense.listFromJson(json);
+  }
+
+  Future<void> saveExpenses(List<Expense> expenses) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_expensesKey, Expense.listToJson(expenses));
   }
 
   // ── Settings ───────────────────────────────────────────
