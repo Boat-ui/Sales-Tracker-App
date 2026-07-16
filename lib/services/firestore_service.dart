@@ -4,20 +4,18 @@ import '../models/stock_item.dart';
 import '../models/sale.dart';
 import '../models/settings.dart';
 import '../models/expense.dart';
+import '../models/debt.dart';
 
 class FirestoreService {
   final _db = FirebaseFirestore.instance;
 
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
-  CollectionReference get _stock =>
-      _db.collection('users').doc(_uid).collection('stock');
-  CollectionReference get _sales =>
-      _db.collection('users').doc(_uid).collection('sales');
-  CollectionReference get _expenses =>
-      _db.collection('users').doc(_uid).collection('expenses');
-  DocumentReference get _settingsDoc =>
-      _db.collection('users').doc(_uid).collection('meta').doc('settings');
+  CollectionReference get _stock    => _db.collection('users').doc(_uid).collection('stock');
+  CollectionReference get _sales    => _db.collection('users').doc(_uid).collection('sales');
+  CollectionReference get _expenses => _db.collection('users').doc(_uid).collection('expenses');
+  CollectionReference get _debts    => _db.collection('users').doc(_uid).collection('debts');
+  DocumentReference  get _settingsDoc => _db.collection('users').doc(_uid).collection('meta').doc('settings');
 
   // ── Stock ──────────────────────────────────────────────
   Future<List<StockItem>> loadStock() async {
@@ -42,6 +40,14 @@ class FirestoreService {
   }
   Future<void> saveExpense(Expense expense) async => _expenses.doc(expense.id).set(expense.toMap());
   Future<void> deleteExpense(String id) async => _expenses.doc(id).delete();
+
+  // ── Debts ──────────────────────────────────────────────
+  Future<List<Debt>> loadDebts() async {
+    final snap = await _debts.orderBy('date', descending: true).get();
+    return snap.docs.map((d) => Debt.fromMap(d.data() as Map<String, dynamic>)).toList();
+  }
+  Future<void> saveDebt(Debt debt) async => _debts.doc(debt.id).set(debt.toMap());
+  Future<void> deleteDebt(String id) async => _debts.doc(id).delete();
 
   // ── Settings ───────────────────────────────────────────
   Future<AppSettings> loadSettings() async {

@@ -12,6 +12,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/stock_screen.dart';
 import 'screens/sales_screen.dart';
 import 'screens/expenses/expenses_screen.dart';
+import 'screens/debts/debts_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -129,6 +130,7 @@ class _MainShellState extends State<MainShell> {
     StockScreen(),
     SalesScreen(),
     ExpensesScreen(),
+    DebtsScreen(),
     SettingsScreen(),
   ];
 
@@ -147,6 +149,7 @@ class _MainShellState extends State<MainShell> {
           NavigationDestination(icon: Icon(Icons.inventory_2_outlined), selectedIcon: Icon(Icons.inventory_2), label: 'Stock'),
           NavigationDestination(icon: Icon(Icons.point_of_sale_outlined), selectedIcon: Icon(Icons.point_of_sale), label: 'Sales'),
           NavigationDestination(icon: Icon(Icons.receipt_long_outlined), selectedIcon: Icon(Icons.receipt_long), label: 'Expenses'),
+          NavigationDestination(icon: Icon(Icons.people_outline), selectedIcon: Icon(Icons.people), label: 'Debts'),
           NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),

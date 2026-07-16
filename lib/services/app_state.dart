@@ -3,23 +3,26 @@ import '../models/stock_item.dart';
 import '../models/sale.dart';
 import '../models/settings.dart';
 import '../models/expense.dart';
+import '../models/debt.dart';
 import 'firestore_service.dart';
 import 'storage_service.dart';
 import 'notification_service.dart';
 
 class AppState extends ChangeNotifier {
   final FirestoreService _firestore = FirestoreService();
-  final StorageService _local = StorageService();
+  final StorageService   _local     = StorageService();
 
   List<StockItem> _stock    = [];
   List<Sale>      _sales    = [];
   List<Expense>   _expenses = [];
+  List<Debt>      _debts    = [];
   AppSettings     _settings = AppSettings();
   bool            _loaded   = false;
 
   List<StockItem> get stock    => List.unmodifiable(_stock);
   List<Sale>      get sales    => List.unmodifiable(_sales);
   List<Expense>   get expenses => List.unmodifiable(_expenses);
+  List<Debt>      get debts    => List.unmodifiable(_debts);
   AppSettings     get settings => _settings;
   bool            get loaded   => _loaded;
 
@@ -30,11 +33,13 @@ class AppState extends ChangeNotifier {
       _stock    = await _firestore.loadStock();
       _sales    = await _firestore.loadSales();
       _expenses = await _firestore.loadExpenses();
+      _debts    = await _firestore.loadDebts();
       _settings = await _firestore.loadSettings();
     } catch (_) {
       _stock    = await _local.loadStock();
       _sales    = await _local.loadSales();
       _expenses = await _local.loadExpenses();
+      _debts    = await _local.loadDebts();
       _settings = await _local.loadSettings();
     }
     _loaded = true;
@@ -46,16 +51,14 @@ class AppState extends ChangeNotifier {
     _stock    = [];
     _sales    = [];
     _expenses = [];
+    _debts    = [];
     _settings = AppSettings();
     _loaded   = false;
     notifyListeners();
   }
 
   void _checkLowStock() {
-    NotificationService.checkLowStock(
-      stock: _stock,
-      threshold: _settings.lowStockThreshold,
-    );
+    NotificationService.checkLowStock(stock: _stock, threshold: _settings.lowStockThreshold);
   }
 
   // ── Stock ──────────────────────────────────────────────
@@ -129,6 +132,39 @@ class AppState extends ChangeNotifier {
     await _local.saveExpenses(_expenses);
   }
 
+  // ── Debts ──────────────────────────────────────────────
+  Future<void> addDebt(Debt debt) async {
+    _debts = [..._debts, debt];
+    notifyListeners();
+    await _firestore.saveDebt(debt);
+    await _local.saveDebts(_debts);
+  }
+
+  Future<void> addDebtPayment(String debtId, DebtPayment payment) async {
+    _debts = [
+      for (final d in _debts)
+        if (d.id == debtId) d.withPayment(payment) else d
+    ];
+    notifyListeners();
+    final updated = _debts.firstWhere((d) => d.id == debtId);
+    await _firestore.saveDebt(updated);
+    await _local.saveDebts(_debts);
+  }
+
+  Future<void> markDebtFullyPaid(String debtId) async {
+    final debt = _debts.firstWhere((d) => d.id == debtId);
+    final remaining = debt.balance;
+    if (remaining <= 0) return;
+    await addDebtPayment(debtId, DebtPayment(amount: remaining, date: DateTime.now(), note: 'Marked as fully paid'));
+  }
+
+  Future<void> deleteDebt(String id) async {
+    _debts = _debts.where((d) => d.id != id).toList();
+    notifyListeners();
+    await _firestore.deleteDebt(id);
+    await _local.saveDebts(_debts);
+  }
+
   // ── Settings ───────────────────────────────────────────
   Future<void> updateSettings(AppSettings s) async {
     _settings = s;
@@ -160,9 +196,8 @@ class AppState extends ChangeNotifier {
     };
   }
 
-  // Net profit = sales profit - expenses (for a given period)
   double netProfitForPeriod(List<Sale> sales, List<Expense> expenses) {
-    final profit  = sales.fold(0.0, (a, s) => a + s.totalProfit);
+    final profit   = sales.fold(0.0, (a, s) => a + s.totalProfit);
     final expTotal = expenses.fold(0.0, (a, e) => a + e.amount);
     return profit - expTotal;
   }
