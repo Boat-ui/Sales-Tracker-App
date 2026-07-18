@@ -35,23 +35,27 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icon/
+    - assets/splash.png
+    - assets/logo.png
+  
 
-flutter_icons:
+flutter_launcher_icons:
   android: true
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/icon/app_icon.png"
   adaptive_icon_background: "#0D1F2D"
   adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
 
 flutter_native_splash:
-  color: "#0D1F2D"
+  color: "#0026A3"
   image: assets/icon/app_icon.png
-  color_dark: "#0D1F2D"
+  color_dark: "#0026A3"
   image_dark: assets/icon/app_icon.png
-  android_12:
-    color: "#0D1F2D"
-    image: assets/icon/app_icon.png
-    icon_background_color: "#0D1F2D"
+  fullscreen: true
   android: true
   ios: true
-  fullscreen: true
+  android_12:
+    color: "#0026A3"
+    image: assets/icon/app_icon.png
+    icon_background_color: "#0026A3"

@@ -2,33 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppTheme {
-  static const navy       = Color(0xFF0D1F2D);
-  static const navyLight  = Color(0xFF162A3A);
-  static const navyCard   = Color(0xFF1A3244);
-  static const teal       = Color(0xFF1D9E75);
-  static const tealLight  = Color(0xFF5DCAA5);
-  static const tealFaint  = Color(0x181D9E75);
-  static const tealBorder = Color(0x401D9E75);
+  // ── Core palette — matches BizSplit splash screen ──────
+  static const navy       = Color(0xFF001489); // deep royal blue background
+  static const navyLight  = Color(0xFF0020B8); // slightly lighter blue for nav/sheets
+  static const navyCard   = Color(0xFF002ACC); // card surfaces
+  static const blue       = Color(0xFF4D9FFF); // bright sky blue accent
+  static const blueLight  = Color(0xFF80BFFF); // lighter blue highlight
+  static const blueFaint  = Color(0x1A4D9FFF); // faint blue tint
+  static const blueBorder = Color(0x404D9FFF); // blue border
   static const white      = Color(0xFFFFFFFF);
-  static const textPrimary   = Color(0xFFEEF2F5);
-  static const textSecondary = Color(0xFF8BA4B5);
-  static const textMuted     = Color(0xFF4A6478);
+  static const textPrimary   = Color(0xFFFFFFFF);
+  static const textSecondary = Color(0xFFB3CCFF); // soft blue-white
+  static const textMuted     = Color(0xFF6688CC); // muted blue-grey
 
-  static const profit  = Color(0xFF1D9E75);
-  static const revenue = Color(0xFF3B8EE8);
-  static const biz     = Color(0xFF9B7FE8);
-  static const savings = Color(0xFF5DCAA5);
-  static const spend   = Color(0xFFE87B5A);
-  static const warning = Color(0xFFE8A83B);
-  static const danger  = Color(0xFFE85A5A);
+  // ── Aliases — keeps existing code working ──────────────
+  static const teal       = blue;
+  static const tealLight  = blueLight;
+  static const tealFaint  = blueFaint;
+  static const tealBorder = blueBorder;
+
+  static const profit  = Color(0xFF00E5A0); // bright teal green
+  static const revenue = Color(0xFF4D9FFF); // sky blue
+  static const biz     = Color(0xFFAA80FF); // purple
+  static const savings = Color(0xFF00CCCC); // cyan
+  static const spend   = Color(0xFFFF9966); // orange
+  static const warning = Color(0xFFFFCC44); // yellow
+  static const danger  = Color(0xFFFF5566); // red
 
   static ThemeData get theme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: navy,
     colorScheme: const ColorScheme.dark(
-      primary: teal,
-      secondary: tealLight,
+      primary: blue,
+      secondary: blueLight,
       surface: navyLight,
       onPrimary: white,
       onSurface: textPrimary,
@@ -51,16 +58,16 @@ class AppTheme {
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: navyLight,
-      indicatorColor: Color(0x181D9E75),
+      indicatorColor: const Color(0x1A4D9FFF),
       iconTheme: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return const IconThemeData(color: teal);
+          return const IconThemeData(color: blue);
         }
         return const IconThemeData(color: textMuted);
       }),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.selected)) {
-          return const TextStyle(color: teal, fontSize: 11, fontWeight: FontWeight.w600);
+          return const TextStyle(color: blue, fontSize: 11, fontWeight: FontWeight.w600);
         }
         return const TextStyle(color: textMuted, fontSize: 11);
       }),
@@ -70,17 +77,17 @@ class AppTheme {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFF1D3A4F), width: 0.5),
+        side: const BorderSide(color: Color(0xFF0040DD), width: 0.5),
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: teal,
+      backgroundColor: blue,
       foregroundColor: white,
       elevation: 0,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: teal,
+        backgroundColor: blue,
         foregroundColor: white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -93,19 +100,19 @@ class AppTheme {
       fillColor: navyLight,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF1D3A4F)),
+        borderSide: const BorderSide(color: Color(0xFF0040DD)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF1D3A4F)),
+        borderSide: const BorderSide(color: Color(0xFF0040DD)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: teal, width: 1.5),
+        borderSide: const BorderSide(color: blue, width: 1.5),
       ),
       labelStyle: const TextStyle(color: textSecondary),
       hintStyle: const TextStyle(color: textMuted),
-      prefixIconColor: teal,
+      prefixIconColor: blue,
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: navyLight,
@@ -114,7 +121,7 @@ class AppTheme {
       ),
     ),
     dividerTheme: const DividerThemeData(
-      color: Color(0xFF1D3A4F),
+      color: Color(0xFF0040DD),
       thickness: 0.5,
     ),
     snackBarTheme: SnackBarThemeData(
@@ -125,9 +132,9 @@ class AppTheme {
     ),
     chipTheme: ChipThemeData(
       backgroundColor: navyLight,
-      selectedColor: const Color(0x181D9E75),
+      selectedColor: const Color(0x1A4D9FFF),
       labelStyle: const TextStyle(color: textPrimary),
-      side: const BorderSide(color: Color(0xFF1D3A4F), width: 0.5),
+      side: const BorderSide(color: Color(0xFF0040DD), width: 0.5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
     dialogTheme: DialogThemeData(
@@ -138,10 +145,10 @@ class AppTheme {
       contentTextStyle: const TextStyle(color: textSecondary, fontSize: 14),
     ),
     sliderTheme: const SliderThemeData(
-      activeTrackColor: teal,
-      inactiveTrackColor: Color(0xFF1D3A4F),
-      thumbColor: teal,
-      overlayColor: Color(0x181D9E75),
+      activeTrackColor: blue,
+      inactiveTrackColor: Color(0xFF0040DD),
+      thumbColor: blue,
+      overlayColor: Color(0x1A4D9FFF),
     ),
   );
 }

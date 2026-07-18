@@ -48,15 +48,15 @@ class _DashboardScreenState extends State<DashboardScreen>
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: Row(
                 children: [
-                  Container(
-                    width: 42, height: 42,
-                    decoration: BoxDecoration(
-                      color: AppTheme.navyCard,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFF1D3A4F), width: 0.5),
-                    ),
-                    child: CustomPaint(painter: _MiniIconPainter()),
-                  ),
+                  ClipRRect(
+  borderRadius: BorderRadius.circular(12),
+  child: Image.asset(
+    'assets/logo.png',
+    width: 42,
+    height: 42,
+    fit: BoxFit.cover,
+  ),
+),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
