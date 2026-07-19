@@ -13,8 +13,8 @@ class AuthService {
     required String email,
     required String password,
     required String name,
-    required String role, // 'owner', 'manager', 'cashier'
-    String? businessId,   // null if owner (creates new business)
+    required String role,
+    String? businessId,
   }) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -23,29 +23,16 @@ class AuthService {
       );
       final uid = cred.user!.uid;
 
-      // If owner, create a new business document
-      String resolvedBusinessId = businessId ?? '';
-      if (role == 'owner') {
-        final bizRef = _db.collection('businesses').doc();
-        resolvedBusinessId = bizRef.id;
-        await bizRef.set({
-          'name': '$name\'s Business',
-          'ownerId': uid,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-      }
-
-      // Save user profile
+      // Save user profile — business is created by AppState.init() on first login
       await _db.collection('users').doc(uid).set({
         'name': name,
         'email': email,
         'role': role,
-        'businessId': resolvedBusinessId,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
       await cred.user!.updateDisplayName(name);
-      return null; // null = success
+      return null;
     } on FirebaseAuthException catch (e) {
       return _authError(e.code);
     }

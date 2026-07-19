@@ -6,6 +6,8 @@ import '../services/app_state.dart';
 import '../widgets/summary_card.dart';
 import '../theme/app_theme.dart';
 import '../models/sale.dart';
+import '../models/business.dart';
+import 'business/manage_businesses_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -49,32 +51,52 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Row(
                 children: [
                   ClipRRect(
-  borderRadius: BorderRadius.circular(12),
-  child: Image.asset(
-    'assets/logo.png',
-    width: 42,
-    height: 42,
-    fit: BoxFit.cover,
-  ),
-),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset('assets/logo.png', width: 42, height: 42, fit: BoxFit.cover),
+                  ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: const TextSpan(
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.4),
-                          children: [
-                            TextSpan(text: 'Biz', style: TextStyle(color: AppTheme.textPrimary)),
-                            TextSpan(text: 'Split', style: TextStyle(color: AppTheme.teal)),
-                          ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: const TextSpan(
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.4),
+                            children: [
+                              TextSpan(text: 'Biz', style: TextStyle(color: AppTheme.textPrimary)),
+                              TextSpan(text: 'Split', style: TextStyle(color: AppTheme.teal)),
+                            ],
+                          ),
                         ),
+                        Text(DateFormat('EEE, MMM d yyyy').format(DateTime.now()), style: const TextStyle(color: AppTheme.textMuted, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  // ── Business switcher ──────────────────
+                  GestureDetector(
+                    onTap: () => _showBusinessSwitcher(context, state),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.navyCard,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFF0040DD), width: 0.5),
                       ),
-                      Text(
-                        DateFormat('EEE, MMM d yyyy').format(DateTime.now()),
-                        style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
-                      ),
-                    ],
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Text(state.activeBusiness?.type.emoji ?? '🛍️', style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 100),
+                          child: Text(
+                            state.activeBusiness?.name ?? 'My Business',
+                            style: const TextStyle(color: AppTheme.textPrimary, fontSize: 12, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.keyboard_arrow_down, color: AppTheme.textMuted, size: 16),
+                      ]),
+                    ),
                   ),
                 ],
               ),
@@ -132,9 +154,80 @@ class _DashboardScreenState extends State<DashboardScreen>
       ),
     );
   }
+
+  void _showBusinessSwitcher(BuildContext context, AppState state) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              const Text('Switch Business', style: TextStyle(color: AppTheme.textPrimary, fontSize: 17, fontWeight: FontWeight.w700)),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageBusinessesScreen()));
+                },
+                icon: const Icon(Icons.settings_outlined, size: 16, color: AppTheme.teal),
+                label: const Text('Manage', style: TextStyle(color: AppTheme.teal, fontSize: 13)),
+              ),
+            ]),
+            const SizedBox(height: 12),
+            ...state.businesses.map((biz) {
+              final isActive = biz.id == state.activeBizId;
+              return GestureDetector(
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  if (!isActive) await state.switchBusiness(biz);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isActive ? AppTheme.teal.withOpacity(0.08) : AppTheme.navyCard,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: isActive ? AppTheme.teal : const Color(0xFF0040DD), width: isActive ? 1.5 : 0.5),
+                  ),
+                  child: Row(children: [
+                    Text(biz.type.emoji, style: const TextStyle(fontSize: 22)),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(biz.name, style: TextStyle(color: isActive ? AppTheme.teal : AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 14)),
+                      Text(biz.type.label, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11)),
+                    ])),
+                    if (isActive) const Icon(Icons.check_circle, color: AppTheme.teal, size: 20),
+                  ]),
+                ),
+              );
+            }),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageBusinessesScreen()));
+                },
+                icon: const Icon(Icons.add_business_outlined, color: AppTheme.teal, size: 18),
+                label: const Text('Add New Business', style: TextStyle(color: AppTheme.teal)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppTheme.teal),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-// ── Overview Tab ─────────────────────────────────────────
 class _OverviewTab extends StatelessWidget {
   final List<Sale> todaySales;
   final Map<String, double> todaySummary;
@@ -585,25 +678,4 @@ class _AnalyticsTab extends StatelessWidget {
       Text(msg, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12), textAlign: TextAlign.center),
     ]),
   );
-}
-
-class _MiniIconPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width; final h = size.height;
-    final bars = [[0.16, 0.26, 0.38], [0.34, 0.44, 0.65], [0.52, 0.60, 1.0], [0.70, 0.50, 0.85]];
-    const bottom = 0.82; const bw = 0.13;
-    final p = Paint()..style = PaintingStyle.fill;
-    for (final b in bars) {
-      p.color = const Color(0xFF1D9E75).withOpacity(b[2]);
-      final bh = h * b[1];
-      canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(w*b[0], h*bottom-bh, w*bw, bh), Radius.circular(w*0.04)), p);
-    }
-    final lp = Paint()..color = const Color(0xFF5DCAA5)..strokeWidth = w*0.05..strokeCap = StrokeCap.round..style = PaintingStyle.stroke;
-    final pts = bars.map((b) => Offset(w*b[0]+w*bw/2, h*bottom-h*b[1])).toList();
-    final path = Path()..moveTo(pts[0].dx, pts[0].dy);
-    for (int i = 1; i < pts.length; i++) path.lineTo(pts[i].dx, pts[i].dy);
-    canvas.drawPath(path, lp);
-  }
-  @override bool shouldRepaint(_) => false;
 }
